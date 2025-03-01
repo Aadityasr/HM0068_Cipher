@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Aadityasr/HM0068_Cipher#readme",
   "dependencies": {
+    "axios": "^1.8.1",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",

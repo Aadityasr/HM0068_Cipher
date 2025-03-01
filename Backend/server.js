@@ -38,6 +38,13 @@ app.use('/login',userRoutes)
 const userAuth = require('./auth')
 app.use(userAuth)
 
+const healthProfile = require('./routes/healthProfileRoutes')
+app.use('/health', healthProfile);
+// app.use('/recommend',healthProfile)
+
+//community
+const communityRoutes = require("./routes/communityRoutes");
+app.use("/community", communityRoutes);
 
 //Server check 
 app.get('/', (req,res)=>{
