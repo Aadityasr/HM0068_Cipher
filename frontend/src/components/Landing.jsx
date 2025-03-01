@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
+import Features from "./Features";
+import PregnancyTips from "./PregnancyTips";
+import DoctorsPage from "./Doctors";
+import MakeAppointment from "./Appointment";
+import MedicalHistoryForm from "./MedicalHistory";
+import HeroComp from "./HeroComp";
 
 export default function Landing() {
   const [position, setPosition] = useState(110); // Start from the right
@@ -25,7 +31,6 @@ export default function Landing() {
 
   return (
     <div>
-      <Navbar />
       <div className="relative overflow-hidden">
         {/* Background Image */}
         <img src="/background/baby-back-1.jpg" className="w-full h-[70vh] object-cover" />
@@ -44,9 +49,11 @@ export default function Landing() {
   src="/background/stars.png" 
   className="absolute bottom-95 right-10 w-48 h-52" 
 />
-
-
       </div>
+      <Features/>
+      <MakeAppointment/>
+      <MedicalHistoryForm/>
+      <HeroComp/>
     </div>
   );
 }
