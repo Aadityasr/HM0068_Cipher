@@ -57,6 +57,9 @@ router.post("/:postId/reply", async (req, res) => {
         const { postId } = req.params;
         const { userId, content } = req.body;
 
+        console.log(userId);
+        console.log(postId);
+
         const post = await Post.findById(postId);
         if (!post) return res.status(404).json({ message: "Post not found" });
 

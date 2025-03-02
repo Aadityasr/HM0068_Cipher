@@ -3,6 +3,7 @@ import { Input } from "./ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios"
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -11,13 +12,30 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); // Hook to navigate after signup
 
-  const handleSignup = () => {
-    // Simulate the signup process (e.g., send email to server)
-    console.log("Signup successful");
+  const handleSignup = async () => {
+    try {
 
-    // Redirect to OTP verification page after signup
-    navigate("/verify-otp");
+      navigate("/verify-otp");
+      
+      const response = await axios.post("http://localhost:3000/signup", {
+        name,
+        email,
+        password
+      });
+
+      
+      console.log(email);
+
+      console.log(response);
+
+      localStorage.setItem("email" , email)
+
+      console.log("Signup successful:", response.data);
+    } catch (error) {
+      console.error("Signup failed:", error.response?.data || error.message);
+    }
   };
+  
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-b from-pink-100 to-pink-200 p-6">

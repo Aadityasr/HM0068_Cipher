@@ -2,13 +2,38 @@ import { useState } from "react";
 import { Input } from "./ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); // ✅ Correct way to use navigate
 
+  const handleOnClick = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/login", {
+        email,
+        password
+      });
+  
+      console.log("Login successful:", response.data);
+      const id = response.data.userId;
+      localStorage.setItem("userId" , id )
+      
+      // Store token if provided
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+  
+      // Redirect after successful login
+      navigate("/welcome"); // ✅ Corrected navigate usage
+    } catch (error) {
+      console.error("Login failed:", error.response?.data || error.message);
+    }
+  };
+  
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-b from-pink-100 to-pink-200 p-6">
       <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md text-center transition-all transform hover:scale-105">
@@ -46,7 +71,10 @@ export default function Login() {
         </div>
         
         {/* Login Button */}
-        <Button className="mt-6 w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-lg shadow-md transition-all transform hover:scale-105">
+        <Button 
+          onClick={handleOnClick} 
+          className="mt-6 w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-lg shadow-md transition-all transform hover:scale-105"
+        >
           Login
         </Button>
 

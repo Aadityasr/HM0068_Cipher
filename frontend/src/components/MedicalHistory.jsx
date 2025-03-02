@@ -1,36 +1,50 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const MedicalHistoryForm = () => {
   const [formData, setFormData] = useState({
+    userId : localStorage.getItem("userId"),
     name: "",
     age: "",
-    gender: "",
     trimester: "",
-    allergies: "",
-    medications: "",
-    medicalConditions: "",
-    familyMedicalHistory: "",
-    emergencyContactName: "",
-    emergencyContactNumber: "",
+    weight: "",
+    height: "",
+    medicalConditions: [],
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: ["age", "trimester", "weight", "height"].includes(name) ? Number(value) : 
+              name === "medicalConditions" ? value.split(",").map((item) => item.trim()) :
+              value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    // You can send the form data to a server or save it as needed
+
+    try {
+      const response = await axios.post("http://localhost:3000/health", formData);
+      if (response) {
+        navigate("/welcome");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="mt-20 max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <h1 className="text-2xl font-bold text-center text-pink-600 mb-6">Medical History Form</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Personal Information Section */}
         <div>
           <label className="block mb-2 font-medium text-gray-700">Name:</label>
           <input
@@ -40,6 +54,7 @@ const MedicalHistoryForm = () => {
             onChange={handleChange}
             className="w-full p-3 border border-gray-300 rounded-md"
             placeholder="Full Name"
+            required
           />
         </div>
 
@@ -52,25 +67,10 @@ const MedicalHistoryForm = () => {
             onChange={handleChange}
             className="w-full p-3 border border-gray-300 rounded-md"
             placeholder="Age"
+            required
           />
         </div>
 
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Gender:</label>
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md"
-          >
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        {/* Trimester Section */}
         <div>
           <label className="block mb-2 font-medium text-gray-700">Trimester:</label>
           <select
@@ -78,86 +78,52 @@ const MedicalHistoryForm = () => {
             value={formData.trimester}
             onChange={handleChange}
             className="w-full p-3 border border-gray-300 rounded-md"
+            required
           >
             <option value="">Select Trimester</option>
-            <option value="First Trimester">First Trimester (0-12 weeks)</option>
-            <option value="Second Trimester">Second Trimester (13-26 weeks)</option>
-            <option value="Third Trimester">Third Trimester (27-40 weeks)</option>
+            <option value="1">First Trimester (1-12 weeks)</option>
+            <option value="2">Second Trimester (13-26 weeks)</option>
+            <option value="3">Third Trimester (27-40 weeks)</option>
           </select>
         </div>
 
-        {/* Medical History Section */}
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Do you have any allergies?</label>
-          <textarea
-            name="allergies"
-            value={formData.allergies}
+          <label className="block mb-2 font-medium text-gray-700">Weight (kg):</label>
+          <input
+            type="number"
+            name="weight"
+            value={formData.weight}
             onChange={handleChange}
             className="w-full p-3 border border-gray-300 rounded-md"
-            placeholder="Describe your allergies"
+            placeholder="Weight in kg"
+            required
           />
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Current Medications:</label>
-          <textarea
-            name="medications"
-            value={formData.medications}
+          <label className="block mb-2 font-medium text-gray-700">Height (cm):</label>
+          <input
+            type="number"
+            name="height"
+            value={formData.height}
             onChange={handleChange}
             className="w-full p-3 border border-gray-300 rounded-md"
-            placeholder="List any medications you are currently taking"
+            placeholder="Height in cm"
+            required
           />
         </div>
 
         <div>
-          <label className="block mb-2 font-medium text-gray-700">Any known medical conditions?</label>
+          <label className="block mb-2 font-medium text-gray-700">Medical Conditions:</label>
           <textarea
             name="medicalConditions"
-            value={formData.medicalConditions}
+            value={formData.medicalConditions.join(", ")} // Display as comma-separated string
             onChange={handleChange}
             className="w-full p-3 border border-gray-300 rounded-md"
-            placeholder="Describe any medical conditions you have"
+            placeholder="Enter conditions separated by commas (e.g., Anemia, Diabetes)"
           />
         </div>
 
-        {/* Family Medical History Section */}
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Family Medical History:</label>
-          <textarea
-            name="familyMedicalHistory"
-            value={formData.familyMedicalHistory}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md"
-            placeholder="Any significant family medical history"
-          />
-        </div>
-
-        {/* Emergency Contact Section */}
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Emergency Contact Name:</label>
-          <input
-            type="text"
-            name="emergencyContactName"
-            value={formData.emergencyContactName}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md"
-            placeholder="Emergency Contact Name"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Emergency Contact Number:</label>
-          <input
-            type="text"
-            name="emergencyContactNumber"
-            value={formData.emergencyContactNumber}
-            onChange={handleChange}
-            className="w-full p-3 border border-gray-300 rounded-md"
-            placeholder="Emergency Contact Number"
-          />
-        </div>
-
-        {/* Submit Button */}
         <div>
           <Button
             type="submit"
