@@ -14,8 +14,6 @@ export default function Navbar() {
   const currentPath = location.pathname.replace(/\/$/, ""); 
   const isFixed = fixedRoutes.includes(currentPath);
 
-  // Simulate a logged-in state
-  const loggedin = true; // Update based on actual auth state
 
   // Check if the current route is '/book-appointment'
   const isBookAppointmentPage = currentPath === "/book-appointment";
@@ -29,14 +27,23 @@ export default function Navbar() {
         ${isFixed ? "fixed top-0 w-full z-50" : ""}`}
     >
       {/* Logo */}
-      <div className="text-2xl font-bold text-pink-600">MotherCare</div>
+      <div className="flex items-center" onClick={()=>{
+        navigate("/");
+      }}>
+        <img
+          src="/background/logo.png"
+          className="w-12 h-12 mr-4" // Adjusted size for logo
+          alt="Logo"
+        />
+        <div className="text-2xl font-bold text-pink-600">MotherCare</div>
+      </div>
 
       {/* Desktop Navigation */}
       <div className="flex justify-between hidden md:flex gap-6">
         <Link to="/" className="text-gray-700 hover:text-pink-600">Home</Link>
         <Link to="/pregnancyTips" className="text-gray-700 hover:text-pink-600">Pregnancy Tips</Link>
-        <Link to="/doctors" className="text-gray-700 hover:text-pink-600">Doctors</Link>
-        <Link to="/contact" className="text-gray-700 hover:text-pink-600">Contact</Link>
+        <Link to="/doctors" className="text-gray-700 hover:text-pink-600">Doctors</Link>  
+        <Link to="/community" className="text-gray-700 hover:text-pink-600">Community</Link>
       </div>
 
       {/* Call to Action: Signup button shifted to the left */}
@@ -44,14 +51,10 @@ export default function Navbar() {
       <Button 
           className="bg-pink-500 hover:bg-pink-600 text-white mr-6" 
           onClick={() => {
-            if (!loggedin) {
-              navigate("/signup");
-            } else {
-              navigate("/book-appointment");
-            }
+            navigate("welcome")
           }}
         >
-          Book an Appointment
+          My Health
         </Button>
         <Button className="bg-pink-500 hover:bg-pink-600 text-white" onClick={() => navigate("/signup")}>
           Signup

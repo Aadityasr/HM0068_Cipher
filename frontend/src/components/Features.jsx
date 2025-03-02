@@ -10,7 +10,7 @@ export default function Features() {
     {
       icon: <Stethoscope className="w-10 h-10 text-pink-500" />,
       title: "Find Doctors",
-      description: "Easily book consultations with experienced gynecologists and pediatricians.",
+      description: "Monitor your pregnancy health with our smart tracking tools.",
     },
     {
       icon: <Heart className="w-10 h-10 text-pink-500" />,

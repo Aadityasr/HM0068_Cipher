@@ -24,7 +24,7 @@ const SignUpUser = require("./model/user");
 
 const router = express.Router();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const User = require('./model/user');
 
 // Rate Limiting (Prevent Brute Force Attacks)
@@ -117,18 +117,23 @@ router.post("/verify-otp", async (req, res) => {
       return res.status(400).json({ message: "Invalid OTP" });
 
     const user = new User({ 
-      name: storedData.name,  // ✅ Now saving name
+      name: storedData.name,  
       email: storedData.email, 
       password: storedData.hashedPassword 
     });
 
-    await user.save();
+    await user.save();  // ✅ MongoDB will generate ⁠ _id ⁠ here
     delete otpStore[email];
 
     const tokens = generateTokens(user);
     refreshTokens[tokens.refreshToken] = true;
     
-    res.json({ message: "OTP Verified",user, ...tokens });
+    res.json({ 
+      message: "OTP Verified",
+      userId: user._id,  // ✅ Sending userId in response
+      user,
+      ...tokens 
+    });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
@@ -139,13 +144,21 @@ router.post("/login", loginLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+
     if (!user) return res.status(400).json({ message: "User not found" });
 
-    if (!(await bcrypt.compare(password, user.password))) return res.status(401).json({ message: "Invalid Credentials" });
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) return res.status(401).json({ message: "Invalid Credentials" });
+
     const tokens = generateTokens(user);
-    
     refreshTokens[tokens.refreshToken] = true;
-    res.json({ message: "Login Successful", user, ...tokens });
+
+    res.json({
+      message: "Login Successful",
+      userId: user._id,  // ✅ Sending userId in response
+      user,
+      ...tokens
+    });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Appointment = require("../model/appoinments");
 const moment = require("moment");
+const mongoose = require("mongoose");
 
 router.post("/schedule", async (req, res) => {
     try {
@@ -31,6 +32,26 @@ router.post("/schedule", async (req, res) => {
     }
 });
 
+router.get("/appointments/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
 
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
+        }
+
+        const objectIdUser = new mongoose.Types.ObjectId(userId); // ✅ Convert userId to ObjectId
+        const appointments = await Appointment.find({ userId: objectIdUser });
+
+        if (!appointments.length) {
+            return res.status(404).json({ message: "No appointments found for this user" });
+        }
+
+        res.status(200).json(appointments);
+    } catch (error) {
+        console.error("Error fetching appointments:", error);
+        res.status(500).json({ error: "Internal Server Error", details: error.message });
+    }
+});
 
 module.exports = router;

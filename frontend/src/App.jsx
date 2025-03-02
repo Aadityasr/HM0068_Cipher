@@ -8,6 +8,14 @@ import DoctorsPage from "./components/Doctors";
 import Login from "./components/Login";
 import OtpVerification from "./components/OtpVerify";
 import Welcome from "./components/Welcome";
+import MedicalHistoryForm from "./components/MedicalHistory";
+import MakeAppointment from "./components/Appointment";
+import Appointments from "./components/AllAppointments";
+import CareGuidelines from "./components/CareGuidelines";
+import ExerciseDiet from "./components/DietAndExercise";
+import Exercise from "./components/Exercise";
+import Community from "./components/Community";
+import Diet from "./components/Diet";
 
 function App() {
   return (
@@ -21,6 +29,14 @@ function App() {
         <Route path = "/login" element = {<Login/>}/>
         <Route path="/verify-otp" element={<OtpVerification />} />
         <Route path = "/welcome" element = {<Welcome/>}/>
+        <Route path = "/medicalHistory" element = {<MedicalHistoryForm/>}/>
+        <Route path = "/book-appointment" element = {<MakeAppointment/>}/>
+        <Route path = "/all-appointments" element = {<Appointments/>}/>
+        <Route path = "/care-guidelines" element = {<CareGuidelines/>}/>
+        <Route path = "/diet-and-exercise" element = {<ExerciseDiet/>}/>
+        <Route path = "/exercise" element = {<Exercise/>}/>
+        <Route path = "/community" element = {<Community/>}/>
+        <Route path = "/diet" element = {<Diet/>}/>
       </Routes>
     </BrowserRouter>
   );

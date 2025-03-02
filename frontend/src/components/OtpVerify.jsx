@@ -2,19 +2,36 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function OtpVerification() {
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
 
-  const handleVerifyOtp = () => {
-    // Simulate OTP verification process
-    if (otp === "123456") { // Example OTP
-      console.log("OTP Verified!");
-      
-      navigate("/welcome"); // Redirect to a welcome or dashboard page
-    } else {
-      alert("Invalid OTP! Please try again.");
+  const handleVerifyOtp = async () => {
+    try {
+      const email = localStorage.getItem("email"); // Retrieve email from localStorage
+
+      if (!email) {
+        console.error("Email is missing");
+        return;
+      }
+
+      const response = await axios.post("http://localhost:3000/verify-otp", {
+        email,
+        otp
+      });
+
+      if (response.status === 200 && response.data.userId) {
+        const id = response.data.userId;
+        localStorage.setItem("userId", id);
+        console.log("Stored userId:", localStorage.getItem("userId"));
+        navigate("/medicalHistory");
+      } else {
+        console.error("Invalid response format or missing userId:", response.data);
+      }
+    } catch (error) {
+      console.error("Error verifying OTP", error);
     }
   };
 
@@ -39,7 +56,7 @@ export default function OtpVerification() {
         {/* Verify OTP Button */}
         <Button
           className="mt-6 w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-lg shadow-md transition-all transform hover:scale-105"
-          onClick={handleVerifyOtp} // Handle OTP verification
+          onClick={handleVerifyOtp}
         >
           Verify OTP
         </Button>
