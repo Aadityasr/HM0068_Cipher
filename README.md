@@ -130,5 +130,5 @@ This project is licensed under the MIT License.
 
 ## **Contact**
 📧 Email: adityarampure10@gmail.com  
-🌐 Website: [MotherCare](https://hm-0068-cipher.vercel.app/login)
+🌐 Website: [MotherCare](https://hm-0068-cipher.vercel.app/)
 
