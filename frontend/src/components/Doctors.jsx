@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 
 const doctors = [
   { id: 1, name: "Dr. Aditi Sharma", specialty: "Gynecologist", location: "Mumbai", image: "/doctors/aditi.jpg" },
@@ -15,6 +16,13 @@ const doctors = [
 ];
 
 export default function DoctorsPage() {
+
+  const navigate = useNavigate();
+
+  const startCall = () => {
+    navigate("/patient-call"); // Redirects to Patient Call Component
+  };
+
   const [search, setSearch] = useState("");
 
   const filteredDoctors = doctors.filter(
@@ -58,7 +66,7 @@ export default function DoctorsPage() {
               <h2 className="text-2xl font-semibold text-pink-700">{doctor.name}</h2>
               <p className="text-gray-700">{doctor.specialty}</p>
               <p className="text-gray-600">{doctor.location}</p>
-              <Button className="mt-3 bg-pink-500 hover:bg-pink-600 text-white w-full py-2 rounded-full">
+              <Button onClick = {startCall} className="mt-3 bg-pink-500 hover:bg-pink-600 text-white w-full py-2 rounded-full">
                 Book Appointment
               </Button>
             </div>

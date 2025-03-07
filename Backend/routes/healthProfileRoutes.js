@@ -11,31 +11,66 @@ const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
 const WORKOUT_API_KEY = process.env.WORKOUT_API_KEY;
 
 // ✅ Save or Update User Health Profile
-router.post("/", async (req, res) => {  
+router.post("/", async (req, res) => {
     try {
-        const { userId, name, age, trimester, weight, height, medicalConditions } = req.body;
-        let profile = await HealthProfile.findOne({ userId });
+        console.log("📩 Received Data:", req.body); // Log incoming request data
 
-        if (profile) {
-            // ✅ Update existing profile
-            profile.name = name;
-            profile.age = age;
-            profile.trimester = trimester;
-            profile.weight = weight;
-            profile.height = height;
-            profile.medicalConditions = medicalConditions;
-        } else {
-            // ✅ Create new profile
-            profile = new HealthProfile({ userId, name, age, trimester, weight, height, medicalConditions });
+        const { 
+            userId, 
+            name, 
+            age, 
+            bloodGroup, 
+            trimester, 
+            preWeight, 
+            postWeight, 
+            height, 
+            medicalConditions = [], 
+            dueDate 
+        } = req.body;
+
+        // ✅ Validate Required Fields
+        if (!userId || !name || !age || !bloodGroup || !trimester || !preWeight || !postWeight || !height) {
+            return res.status(400).json({ message: "Missing required fields" });
         }
 
-        await profile.save();
+        // ✅ Convert String Numbers to Actual Numbers
+        const validateNumber = (value) => (isNaN(value) ? null : Number(value));
+
+        // ✅ Ensure medicalConditions is an Array
+        const formattedMedicalConditions = Array.isArray(medicalConditions) 
+            ? medicalConditions 
+            : medicalConditions.split(",").map((item) => item.trim());
+
+        // ✅ Calculate BMI
+        const bmi = (validateNumber(postWeight) / ((validateNumber(height) / 100) ** 2)).toFixed(2);
+
+        // ✅ Update or Create the Profile
+        const profile = await HealthProfile.findOneAndUpdate(
+            { userId },
+            { 
+                name, 
+                age: validateNumber(age),
+                bloodGroup, 
+                trimester: validateNumber(trimester),
+                preWeight: validateNumber(preWeight),
+                postWeight: validateNumber(postWeight),
+                height: validateNumber(height),
+                bmi, 
+                medicalConditions: formattedMedicalConditions, 
+                dueDate 
+            },
+            { new: true, upsert: true, runValidators: true }
+        );
+
+        console.log("✅ Profile saved:", profile);
         res.status(201).json({ message: "Health Profile Saved!", profile });
+
     } catch (error) {
-        console.error("Error saving health profile:", error);
-        res.status(500).json({ message: "Server Error", error });
+        console.error("🔥 Server Error:", error);
+        res.status(500).json({ message: "Server Error", error: error.message });
     }
 });
+
 
 // ✅ Fetch Meal Plan from Edamam API (Primary)
 const fetchMealPlanFromEdamam = async (trimester, medicalConditions) => {

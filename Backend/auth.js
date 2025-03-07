@@ -4,10 +4,8 @@ const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const rateLimit = require("express-rate-limit");
 const dotenv = require('dotenv');
 const otpStore = {}; // Store OTPs temporarily
-
 
 
 
@@ -28,11 +26,11 @@ const PORT = process.env.PORT || 3000;
 const User = require('./model/user');
 
 // Rate Limiting (Prevent Brute Force Attacks)
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit to 5 requests per window
-  message: { message: "Too many login attempts. Try again later." }
-});
+// const loginLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 5, // Limit to 5 requests per window
+//   message: { message: "Too many login attempts. Try again later." }
+// });
 
 // MongoDB Connection
 
@@ -140,7 +138,7 @@ router.post("/verify-otp", async (req, res) => {
 });
 
 // User Login
-router.post("/login", loginLimiter, async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -155,6 +153,7 @@ router.post("/login", loginLimiter, async (req, res) => {
 
     res.json({
       message: "Login Successful",
+      name : user.name,
       userId: user._id,  // ✅ Sending userId in response
       user,
       ...tokens

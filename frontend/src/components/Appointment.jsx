@@ -6,12 +6,13 @@ import { useState } from "react";
 export default function MakeAppointment() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    userId : localStorage.getItem("userId"),
+    userId: localStorage.getItem("userId"),
     name: "",
     email: "",
     date: "",
+    time: "",
     doctorName: "",
-    reminderSent : false
+    reminderSent: false
   });
 
   const handleChange = (e) => {
@@ -23,17 +24,17 @@ export default function MakeAppointment() {
 
   const handleOnClick = async (e) => {
     e.preventDefault();
-  
+
     const formattedData = {
       ...formData,
       date: new Date(formData.date) // Convert string to Date object
     };
-  
+    
     try {
       const response = await axios.post("http://localhost:3000/api/schedule", formattedData);
       console.log(response);
-      
-      if (response) {
+
+      if (response.status === 201) {
         console.log("Appointment Confirmed:", response.data);
         navigate("/welcome");
       } else {
@@ -43,7 +44,6 @@ export default function MakeAppointment() {
       console.error("Error booking appointment:", error);
     }
   };
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-pink-50">
@@ -59,8 +59,9 @@ export default function MakeAppointment() {
               id="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
               placeholder="Enter your full name"
+              required
             />
           </div>
 
@@ -71,8 +72,9 @@ export default function MakeAppointment() {
               id="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
               placeholder="Enter your email address"
+              required
             />
           </div>
 
@@ -83,30 +85,33 @@ export default function MakeAppointment() {
               id="date"
               value={formData.date}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              required
             />
           </div>
 
-          {/* <div>
+          <div>
             <label htmlFor="time" className="block text-gray-700">Appointment Time</label>
             <input
               type="time"
               id="time"
               value={formData.time}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              required
             />
-          </div> */}
+          </div>
 
           <div>
-            <label htmlFor="doctor" className="block text-gray-700">Doctor Name</label>
+            <label htmlFor="doctorName" className="block text-gray-700">Doctor Name</label>
             <input
               type="text"
               id="doctorName"
-              value={formData.doctor}
+              value={formData.doctorName}
               onChange={handleChange}
               placeholder="Enter Doctor Name"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              required
             />
           </div>
 

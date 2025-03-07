@@ -12,7 +12,10 @@ console.log("EMAIL_PASS:", process.env.EMAIL_PASS);
 
  require('./utils/reminder')
 
-app.use(cors());
+ const frontendUrl = process.env.REACT_APP_FRONTEND_URL || 'http://localhost:5173';  // Fallback for local development
+
+ app.use(cors());
+
 cron.schedule("* * * * *", async () => {  })// Runs every minute for testing
 
 
@@ -50,6 +53,22 @@ app.use("/community", communityRoutes);
 app.get('/', (req,res)=>{
     res.send("Server is on")
 })
+
+//Video Call 
+const doctorCall = require("./routes/doctorRoutes");
+app.use("/call",doctorCall);
+
+//Names
+const names = require("./routes/nameRouter");
+app.use("/names",names);
+
+//AudioBooks
+const books = require("./routes/audioRoute");
+app.use("/books",books);
+
+//medicine
+const drug = require("./routes/drugsRoute");
+app.use("/",drug);
 
 console.log("EMAIL:", process.env.EMAIL);
 console.log("EMAIL_PASSWORD:", process.env.EMAIL_PASSWORD);

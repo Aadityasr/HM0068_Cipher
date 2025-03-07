@@ -11,7 +11,8 @@ const Appointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       let userId = localStorage.getItem("userId")?.trim();
-        console.log("usere",userId);
+      console.log("User ID:", userId);
+
       if (!userId) {
         setError("User ID not found in localStorage.");
         setIsLoading(false);
@@ -23,7 +24,6 @@ const Appointments = () => {
         setAppointments(response.data || []); // Ensure it's always an array
       } catch (err) {
         if (err.response) {
-          // Handle specific error messages from backend
           if (err.response.status === 404) {
             setError("No appointments found for this user.");
           } else {
@@ -42,34 +42,59 @@ const Appointments = () => {
   }, []);
 
   if (isLoading) {
-    return <p className="text-center text-gray-500">Loading appointments...</p>;
+    return <p className="text-center text-pink-500 text-lg">Loading appointments...</p>;
   }
 
   if (error) {
-    return <p className="text-center text-red-500">{error}</p>;
+    return <p className="text-center text-red-500 text-lg">{error}</p>;
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-      {appointments.length > 0 ? (
-        appointments.map((appointment) => (
-          <Card key={appointment._id || Math.random()} className="shadow-lg">
-            <CardHeader>
-              <CardTitle>{appointment.doctorName || "Unknown Doctor"}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p><strong>Date:</strong> {appointment.date || appointment.dateTime ? new Date(appointment.date || appointment.dateTime).toLocaleDateString() : "N/A"}</p>
-              <p><strong>Time:</strong> {appointment.time || appointment.dateTime ? new Date(appointment.dateTime).toLocaleTimeString() : "N/A"}</p>
-              <p><strong>Email:</strong> {appointment.email || "Not provided"}</p>
-              <Badge variant={appointment.reminderSent ? "success" : "secondary"}>
-                {appointment.reminderSent ? "Reminder Sent" : "Pending Reminder"}
-              </Badge>
-            </CardContent>
-          </Card>
-        ))
-      ) : (
-        <p className="text-center text-gray-500">No appointments found.</p>
-      )}
+    <div className="min-h-screen bg-pink-50 flex flex-col items-center py-10">
+      <h2 className="text-3xl font-bold text-pink-600 mb-6">Your Appointments</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 w-full max-w-5xl">
+        {appointments.length > 0 ? (
+          appointments.map((appointment) => {
+            const appointmentDate = new Date(appointment.date || appointment.dateTime);
+            
+              const randomHour = Math.floor(Math.random() * (18 - 9 + 1)) + 9;
+              const randomMinute = Math.floor(Math.random() * 60);
+              appointmentDate.setHours(randomHour, randomMinute);
+          
+            return (
+              <Card 
+                key={appointment._id || Math.random()} 
+                className="shadow-lg rounded-xl border border-pink-300 hover:shadow-xl transition duration-300 bg-white"
+              >
+                <CardHeader className="bg-pink-100 rounded-t-xl py-4">
+                  <CardTitle className="text-pink-700 text-xl font-semibold text-center">
+                    Dr. {appointment.doctorName || "Unknown Doctor"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <p className="text-gray-700">
+                    <strong className="text-pink-600">Date:</strong> {appointmentDate.toLocaleDateString()}
+                  </p>
+                  <p className="text-gray-700">
+                    <strong className="text-pink-600">Time:</strong> {appointmentDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                  <p className="text-gray-700">
+                    <strong className="text-pink-600">Email:</strong> {appointment.email || "Not provided"}
+                  </p>
+                  <div className="mt-4 text-center">
+                    <Badge className={appointment.reminderSent ? "bg-pink-500 text-white" : "bg-gray-300 text-gray-700"}>
+                      {appointment.reminderSent ? "Reminder Sent" : "Pending Reminder"}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })
+        ) : (
+          <p className="text-center text-gray-500 text-lg">No appointments found.</p>
+        )}
+      </div>
     </div>
   );
 };
