@@ -1,5 +1,24 @@
 {
   "dependencies": {
     "zod": "^3.24.2"
-  }
+  },
+  "name": "hm0068_cipher",
+  "version": "1.0.0",
+  "description": "- ⚡ **React.js** for a modern, fast, and responsive user interface.\r - 🎨 **Tailwind CSS** for a clean and customizable UI.\r - 💅 **ShadCN** for enhanced UI components.",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aadityasr/HM0068_Cipher.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aadityasr/HM0068_Cipher/issues"
+  },
+  "homepage": "https://github.com/Aadityasr/HM0068_Cipher#readme"
 }

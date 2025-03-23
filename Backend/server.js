@@ -16,17 +16,18 @@ app.use(cors());
 cron.schedule("* * * * *", async () => {  })// Runs every minute for testing
 
 
-const PORT = process.env.PORT || 3000;
 
-// // Connect to MongoDB
-// mongoose
-//     .connect(process.env.MONGO_URI)
-//     .then(() => console.log('MongoDB connected'))
-//     .catch((err) => console.error(err));
+
+
+
+
+const PORT = process.env.PORT || 3000;
 
 
 //import db
 const db = require('./db')
+
+// app.use('/api', reminderRoutes);
 
 //Router import
 const appointmentRoutes = require('./routes/appoinmentRoute')
@@ -45,6 +46,11 @@ app.use('/health', healthProfile);
 //community
 const communityRoutes = require("./routes/communityRoutes");
 app.use("/community", communityRoutes);
+
+const pregnancyRoutes = require("./routes/PregnancyRiskRouter");
+
+app.use("/api", pregnancyRoutes);
+
 
 //Server check 
 app.get('/', (req,res)=>{
